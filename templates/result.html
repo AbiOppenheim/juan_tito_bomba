@@ -1,46 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Results</title>
+    <title>Result</title>
 </head>
 <body>
-    {% if not results %}
-        <p>No results found.</p>
-    {% else %}
-        <div>
-            {% for line in results[0] %}
-                <p>{{ line }}</p>
+    <h1>Result</h1>
+    {% if results %}
+        <h2>Option {{ currentResultIndex+1 }} of {{ numResults }}</h2>
+        <ul>
+            {% for item in results[currentResultIndex] %}
+                <li>{{ item }}</li>
             {% endfor %}
-        </div>
-        {% if results|length > 1 %}
-            <button onclick="nextResult()">Next</button>
-        {% endif %}
+        </ul>
+        <form method="POST" action="{{ url_for('result', results=results_str) }}">
+
+            <input type="hidden" name="currentResultIndex" value="{{ currentResultIndex-1 }}">
+            <input type="hidden" name="results" value="{{ results_str }}">
+            {% if currentResultIndex > 0 %}
+                <button type="submit">Previous</button>
+            {% endif %}
+        </form>
+        <form method="POST" action="{{ url_for('result', results=results_str) }}">
+
+            <input type="hidden" name="currentResultIndex" value="{{ currentResultIndex+1 }}">
+            <input type="hidden" name="results" value="{{ results_str }}">
+            {% if currentResultIndex < numResults-1 %}
+                <button type="submit">Next</button>
+            {% endif %}
+        </form>
+    {% else %}
+        <p>No results found.</p>
     {% endif %}
-
-    <script>
-        var results = {{ results|tojson|safe }};
-        var currentResultIndex = 0;
-
-        function nextResult() {
-            currentResultIndex++;
-            if (currentResultIndex >= results.length) {
-                alert('There are no more results.');
-                currentResultIndex = results.length - 1;
-            }
-            updateResult();
-        }
-
-        function updateResult() {
-            var resultDiv = document.querySelector('div');
-            resultDiv.innerHTML = '';
-            var currentResult = results[currentResultIndex];
-            for (var i = 0; i < currentResult.length; i++) {
-                var line = currentResult[i];
-                var lineDiv = document.createElement('div');
-                lineDiv.innerText = line;
-                resultDiv.appendChild(lineDiv);
-            }
-        }
-    </script>
 </body>
 </html>
