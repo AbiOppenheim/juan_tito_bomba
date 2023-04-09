@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Musician Info</title>
+</head>
+<body>
+    <h1>Musician Info</h1>
+    <form method="POST" action="/">
+        <div id="musicians">
+            <div class="musician">
+                <label for="name">Name:</label>
+                <input type="text" name="name0">
+                <label for="instrument_1">Instrument 1:</label>
+                <input type="text" name="first_instrument0">
+                <label for="instrument_2">Instrument 2:</label>
+                <input type="text" name="second_instrument0">
+            </div>
+        </div>
+        <input type="hidden" name="num_musician" value="1">
+        <button type="button" id="add-musician">+</button>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Add event listener to the "Add Musician" button
+        var musicianCount = 1;
+        document.getElementById('add-musician').addEventListener('click', function () {
+            var musiciansDiv = document.getElementById('musicians');
+            var musicianDiv = document.createElement('div');
+            musicianDiv.classList.add('musician');
+            musicianDiv.innerHTML = `
+                <label for="name">Name:</label>
+                <input type="text" name="name${musicianCount}">
+                <label for="instrument_1">Instrument 1:</label>
+                <input type="text" name="first_instrument${musicianCount}">
+                <label for="instrument_2">Instrument 2:</label>
+                <input type="text" name="second_instrument${musicianCount}">
+            `;
+            musiciansDiv.appendChild(musicianDiv);
+            musicianCount++;
+            var numMusicianField = document.querySelector('input[name="num_musician"]');
+            numMusicianField.value = musicianCount;
+        });
+    </script>
+</body>
+</html>
