@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Juan &#9757; tito &#9996; bomba &#129311;</title>
+</head>
+<body>
+    <h1>Juan &#9757; tito &#9996; bomba &#129311;</h1>
+    <form method="POST" action="/">
+        <div id="musicians">
+            <div class="musician">
+                <label for="name">Nombre:</label>
+                <input type="text" name="name0">
+                <label for="instrument_1">Instrumento 1:</label>
+                <input type="text" name="first_instrument0">
+                <label for="instrument_2">Instrumento 2:</label>
+                <input type="text" name="second_instrument0">
+            </div>
+        </div>
+        <input type="hidden" name="num_musician" value="1">
+        <button type="button" id="add-musician">+</button>
+        <br>
+        <button type="submit">Procesar</button>
+        <button type="button" id="save-team">Guardar equipo</button>
+        <button type="button" id="load-team">Cargar último equipo</button>
+
+    </form>
+
+    <script>
+        // Add event listener to the "Add Musician" button
+        var musicianCount = 1;
+        document.getElementById('add-musician').addEventListener('click', function () {
+            var musiciansDiv = document.getElementById('musicians');
+            var musicianDiv = document.createElement('div');
+            musicianDiv.classList.add('musician');
+            musicianDiv.innerHTML = `
+                <label for="name">Nombre:</label>
+                <input type="text" name="name${musicianCount}">
+                <label for="instrument_1">Instrumento 1:</label>
+                <input type="text" name="first_instrument${musicianCount}">
+                <label for="instrument_2">Instrumento 2:</label>
+                <input type="text" name="second_instrument${musicianCount}">
+            `;
+
+            var deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = 'x';
+            deleteBtn.type = 'button';
+        
+            deleteBtn.addEventListener('click', function () {
+                musiciansDiv.removeChild(musicianDiv);
+                musicianCount--;
+
+                // Update the name attributes of the remaining musicians
+                var remainingMusicians = document.querySelectorAll('.musician');
+                for (var i = 0; i < remainingMusicians.length; i++) {
+                    var nameInput = remainingMusicians[i].querySelector('input[name^="name"]');
+                    nameInput.name = 'name' + i;
+                    var instrument1Input = remainingMusicians[i].querySelector('input[name^="first_instrument"]');
+                    instrument1Input.name = 'first_instrument' + i;
+                    var instrument2Input = remainingMusicians[i].querySelector('input[name^="second_instrument"]');
+                    instrument2Input.name = 'second_instrument' + i;
+                }
+
+                numMusicianField.value = musicianCount;
+            });
+
+            musicianDiv.appendChild(deleteBtn);
+            musiciansDiv.appendChild(musicianDiv);
+            musicianCount++;
+            var numMusicianField = document.querySelector('input[name="num_musician"]');
+            numMusicianField.value = musicianCount;
+        });
+        // Add event listener to the "Save Team" button
+        document.getElementById('save-team').addEventListener('click', function() {
+            var musicians = document.querySelectorAll('.musician');
+            var team = [];
+            musicians.forEach(function(musician) {
+                var name = musician.querySelector('input[name^="name"]').value;
+                var instrument1 = musician.querySelector('input[name^="first_instrument"]').value;
+                var instrument2 = musician.querySelector('input[name^="second_instrument"]').value;
+                team.push({name: name, instrument1: instrument1, instrument2: instrument2});
+            });
+            localStorage.setItem('team', JSON.stringify(team));
+            alert('Team saved successfully.');
+        });
+        // Add event listener to the "Load Last Team" button
+        document.getElementById('load-team').addEventListener('click', function() {
+            var savedTeam = JSON.parse(localStorage.getItem('team'));
+            if (savedTeam) {
+                // Remove existing musicians
+                var musiciansDiv = document.getElementById('musicians');
+                musiciansDiv.innerHTML = '';
+
+                // Add musicians from saved team
+                var musicianCount = 0;
+                savedTeam.forEach(function(musician) {
+                    var musicianDiv = document.createElement('div');
+                    musicianDiv.classList.add('musician');
+                    musicianDiv.innerHTML = `
+                        <label for="name">Nombre:</label>
+                        <input type="text" name="name${musicianCount}" value="${musician.name}">
+                        <label for="instrument_1">Instrumento 1:</label>
+                        <input type="text" name="first_instrument${musicianCount}" value="${musician.instrument1}">
+                        <label for="instrument_2">Instrumento 2:</label>
+                        <input type="text" name="second_instrument${musicianCount}" value="${musician.instrument2}">
+                    `;
+                    var deleteBtn = document.createElement('button');
+                    deleteBtn.innerHTML = 'x';
+                    deleteBtn.type = 'button';
+                    
+                    deleteBtn.addEventListener('click', function () {
+                        musiciansDiv.removeChild(musicianDiv);
+                        musicianCount--;
+
+                        // Update the name attributes of the remaining musicians
+                        var remainingMusicians = document.querySelectorAll('.musician');
+                        for (var i = 0; i < remainingMusicians.length; i++) {
+                            var nameInput = remainingMusicians[i].querySelector('input[name^="name"]');
+                            nameInput.name = 'name' + i;
+                            var instrument1Input = remainingMusicians[i].querySelector('input[name^="first_instrument"]');
+                            instrument1Input.name = 'first_instrument' + i;
+                            var instrument2Input = remainingMusicians[i].querySelector('input[name^="second_instrument"]');
+                            instrument2Input.name = 'second_instrument' + i;
+                        }
+
+                        numMusicianField.value = musicianCount;
+                    });
+
+                    musicianDiv.appendChild(deleteBtn);
+                    musiciansDiv.appendChild(musicianDiv);
+                    musicianCount++;
+                    
+                
+                });
+
+                // Update number of musicians
+                var numMusicianField = document.querySelector('input[name="num_musician"]');
+                numMusicianField.value = savedTeam.length;
+
+                alert('Last team loaded successfully.');
+            } else {
+                alert('No team saved.');
+            }
+        });
+
+    </script>
+</body>
+</html>

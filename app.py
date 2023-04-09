@@ -1,9 +1,13 @@
 from flask import Flask, request, render_template, redirect, url_for
 import ast
 from jinja2 import Environment
+from flask_frozen import Freezer,MimetypeMismatchWarning
 import itertools
+import warnings
+
 env = Environment()
 env.globals.update(len=len)
+warnings.simplefilter('ignore', category=MimetypeMismatchWarning)
 
 app = Flask(__name__)
 
@@ -25,7 +29,7 @@ def index():
 @app.route('/result', methods=['GET', 'POST'])
 def result():
     results_str = request.args.get('results')
-    print('all the results:', results_str)
+    # print('all the results:', results_str)
     currentResultIndex = int(request.args.get('currentResultIndex', '0'))
     numResults = int(request.args.get('numResults', '0'))
     if results_str:
@@ -35,8 +39,8 @@ def result():
     currentResult = []
     if currentResultIndex < len(results):
         currentResult = results[currentResultIndex]
-    print('currentResult:', currentResult)
-    print('currentResultIndex:', currentResultIndex)
+    # print('currentResult:', currentResult)
+    # print('currentResultIndex:', currentResultIndex)
     if request.method == 'POST':
         if 'currentResultIndex' in request.form:
             currentResultIndex = int(request.form['currentResultIndex'])
@@ -95,5 +99,9 @@ def process_data(people_data):
             results.append(result)
     return results
 
+
+
+freezer = Freezer(app)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    freezer.freeze()
