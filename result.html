@@ -1,9 +1,23 @@
+<script src="https://unpkg.com/fireworks-js@2.x/dist/index.umd.js"></script>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Result Page</title>
+    <style>
+        /* define the styles for dark mode */
+        body.dark-mode {
+            background-color: #292929;
+            color: #fff;
+        }
+        /* define the styles for the buttons in dark mode */
+        body.dark-mode #buttons button {
+            background-color: #1f1f1f;
+            color: #fff;
+        }
+    </style>
 </head>
-<body>
+<body class="dark-mode"> <!-- add the "dark-mode" class to the body element -->
     <div id="options">
         <!-- options will be added here -->
     </div>
@@ -11,6 +25,13 @@
         <button id="prev-btn" disabled>Prev</button>
         <button id="next-btn">Next</button>
     </div>
+    <!-- jsDelivr  -->
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
+
+    <!-- UNPKG -->
+    <script src="https://unpkg.com/fireworks-js@2.x/dist/index.umd.js"></script>
+
+
     <script>
         // retrieve the options from localStorage
         var options = JSON.parse(localStorage.getItem('options'));
@@ -46,7 +67,14 @@
             const titleElement = document.createElement('h2');
 
             if (resoluble){
-                titleElement.innerText = 'Se puede distribuir bien!';
+                titleElement.innerText = 'Se puede distribuir bien! ';
+                const container = document.createElement('div');
+                container.classList.add('fireworks');
+                document.querySelector('#options').appendChild(container);
+                const fireworks = new Fireworks.default(container);
+                fireworks.start();
+
+
             }else{
                 titleElement.innerText = 'No se puede resolver';
             }
@@ -63,13 +91,13 @@
             if (!resoluble){
                 if (ins_sobra.length !== 0){
                     const musicianElement = document.createElement('div');
-                    musicianElement.innerText = `Instrumentos que sobran ${ins_sobra}`;
+                    musicianElement.innerText = `Instrumentos que sobran: ${ins_sobra}`;
                     document.querySelector('#options').appendChild(musicianElement);
                 }
                 if (music_sobra.length !== 0){
                     console.log('personas_sobran',music_sobra);
                     const musicianElement = document.createElement('div');
-                    musicianElement.innerText = `Personas que sobran ${music_sobra}`;
+                    musicianElement.innerText = `Personas que sobran: ${music_sobra}`;
                     document.querySelector('#options').appendChild(musicianElement);
                 }
 

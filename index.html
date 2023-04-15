@@ -1,11 +1,56 @@
 <!DOCTYPE html>
 <html>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <head>
     <title>Juan &#9757; tito &#9996; bomba &#129311;</title>
-</head>
-<body>
+    <style>
+      body {
+        background-color: #292929;
+        color: #f5f5f5;
+      }
+      h1 {
+        color: #f5f5f5;
+      }
+      label {
+        color: #f5f5f5;
+      }
+      input[type=text] {
+        background-color: #1f1f1f;
+        color: #f5f5f5;
+        border: 1px solid #333333;
+      }
+      input[type=submit], button {
+        background-color: #841679;
+        color: #f5f5f5;
+        border: 1px solid #333333;
+        padding: 5px 10px;
+        margin-top: 10px;
+      }
+      #add-musician {
+        font-size: 20px;
+        background-color: #1f1f1f;
+        color: #f5f5f5;
+        border: none;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+      #add-musician:hover {
+        background-color: #3f3f3f;
+      }
+      #save-team, #load-team {
+        font-size: 16px;
+        background-color: #1f1f1f;
+        color: #f5f5f5;
+        border: none;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+      #save-team:hover, #load-team:hover {
+        background-color: #3f3f3f;
+      }
+    </style>
+  </head>
+  <body>
     <h1>Juan &#9757; tito &#9996; bomba &#129311;</h1>
     <form method="POST" action="/">
         <div id="musicians">
