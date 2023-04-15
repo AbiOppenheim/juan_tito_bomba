@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <head>
     <title>Juan &#9757; tito &#9996; bomba &#129311;</title>
 </head>
@@ -26,9 +28,125 @@
     </form>
 
     <script>
+        function process_data(people_data) {
+            let results = [];
+            let participants = {};
+            var numMusicians = people_data.get('num_musician');
+
+            for (var i = 0; i < numMusicians; i++) {
+                var musicianName = people_data.get('name' + i);
+                var instrument1 = people_data.get('first_instrument' + i);
+                var instrument2 = people_data.get('second_instrument' + i);
+                participants[musicianName] = [instrument1, instrument2];
+            }
+            console.log('participants', participants)
+
+            let instruments = new Set([...Object.values(participants)].flat());
+            console.log('instruments', instruments)
+
+            let n = Object.keys(participants).length;
+            let best = Math.min(instruments.size, n);
+            console.log('best', best, 'n_participants', n);
+
+            let bit_list = [0, 1];
+            let combinations = getAllCombinations(bit_list, n);
+            let bits = [];
+            console.log('combinations', combinations);
+            combinations.forEach((t) => {
+                let bit = new Set([]);
+                Object.values(participants).forEach((instruments, i) => {
+                    bit.add(instruments[t[i]]);
+                });
+                bits.push([Array.from(bit), t]);
+            });
+
+            console.log('bits pre filter',bits);  
+            bits = bits.filter(t => t[0].filter(Boolean).length == best);
+            console.log('bits post filter',bits);
+            console.log('participants',participants);
+            if (best == n) {
+                for (let i = 0; i < 3 && i < bits.length; i++) {
+                    let asignaciones = [];
+                    for (let j = 0; j < Object.keys(participants).length; j++) {
+                        let name = Object.keys(participants)[j];
+                        let instrument = bits[i][0][j];
+                        asignaciones.push([name,instrument]);
+                    }
+                    results.push([asignaciones,[],[]]);
+                }
+            } else {
+                for (let opcion = 0; opcion < bits.length - 1; opcion++) {
+                    let ins = {};
+                    for (let j = 0; j < Object.keys(participants).length; j++) {
+                        let name = Object.keys(participants)[j];
+                        let bit = bits[opcion][1][j];
+                        let instrument = participants[name][bit]
+                        if (!(instrument in ins)) {
+                            ins[instrument] = [name];
+                        } else {
+                            if (bit) {
+                                ins[instrument].push(name);
+                            } else {
+                                ins[instrument].unshift(name);
+                            }
+                        }
+                    }
+                    let selected_participants = new Set();
+                    let selected_instruments = new Set();
+                    let asignaciones = [];
+                    for (let instrument in ins) {
+                        selected_participants.add(ins[instrument][0]);
+                        selected_instruments.add(instrument);
+                        asignaciones.push([ins[instrument][0], instrument]);
+                    }
+                    let unused_instruments = new Set([...instruments].filter(x => !selected_instruments.has(x)));
+                    let unused_participants = new Set(Object.keys(participants).filter(x => !selected_participants.has(x)));
+                    console.log('asignaciones',asignaciones);
+                    result = [asignaciones, [...unused_instruments],[...unused_participants]];
+                    console.log('result',result);
+                    results.push(result);
+                }
+            }
+
+            return results;
+        }
+
+        function getAllCombinations(arr, n) {
+            if (n == 1) {
+                return arr.map(x => [x]);
+            } else {
+                let combinations = [];
+                for (let i = 0; i < arr.length; i++) {
+                    let subCombinations = getAllCombinations(arr, n-1);
+                    for (let j = 0; j < subCombinations.length; j++) {
+                        combinations.push([arr[i], ...subCombinations[j]]);
+                    }
+                }
+                return combinations;
+            }
+        }
+
+
+        // Add event listener to the form submit event
+        console.log('ok1')
+        console.log('ok2')
+        var form = document.querySelector('form');
+        form.addEventListener('submit', function (event) {
+            console.log('ok')
+            event.preventDefault(); // prevent the default form submission behavior
+            var formData = new FormData(form);
+            var numMusicians = formData.get('num_musician');
+            console.log(form)
+            var options = process_data(formData);
+            console.log(options)
+            localStorage.setItem('options', JSON.stringify(options));
+            window.location.href = 'result.html';
+        });
+        
         // Add event listener to the "Add Musician" button
         var musicianCount = 1;
-        document.getElementById('add-musician').addEventListener('click', function () {
+        document.getElementById('add-musician').addEventListener('click', function (event) {
+            event.preventDefault();
             var musiciansDiv = document.getElementById('musicians');
             var musicianDiv = document.createElement('div');
             musicianDiv.classList.add('musician');
@@ -40,15 +158,15 @@
                 <label for="instrument_2">Instrumento 2:</label>
                 <input type="text" name="second_instrument${musicianCount}">
             `;
-
+            
             var deleteBtn = document.createElement('button');
             deleteBtn.innerHTML = 'x';
             deleteBtn.type = 'button';
-        
+            
             deleteBtn.addEventListener('click', function () {
                 musiciansDiv.removeChild(musicianDiv);
                 musicianCount--;
-
+                
                 // Update the name attributes of the remaining musicians
                 var remainingMusicians = document.querySelectorAll('.musician');
                 for (var i = 0; i < remainingMusicians.length; i++) {
@@ -59,16 +177,17 @@
                     var instrument2Input = remainingMusicians[i].querySelector('input[name^="second_instrument"]');
                     instrument2Input.name = 'second_instrument' + i;
                 }
-
-                numMusicianField.value = musicianCount;
+                
+                document.querySelector('input[name="num_musician"]').value = musicianCount;
             });
-
+            
             musicianDiv.appendChild(deleteBtn);
             musiciansDiv.appendChild(musicianDiv);
             musicianCount++;
-            var numMusicianField = document.querySelector('input[name="num_musician"]');
-            numMusicianField.value = musicianCount;
+            document.querySelector('input[name="num_musician"]').value = musicianCount;
         });
+
+
         // Add event listener to the "Save Team" button
         document.getElementById('save-team').addEventListener('click', function() {
             var musicians = document.querySelectorAll('.musician');

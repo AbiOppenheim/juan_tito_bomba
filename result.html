@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result Page</title>
+</head>
+<body>
+    <div id="options">
+        <!-- options will be added here -->
+    </div>
+    <div id="buttons">
+        <button id="prev-btn" disabled>Prev</button>
+        <button id="next-btn">Next</button>
+    </div>
+    <script>
+        // retrieve the options from localStorage
+        var options = JSON.parse(localStorage.getItem('options'));
+        console.log('options',options);
+    
+        var currentOptionIndex = 0; // initialize currentOptionIndex to 0
+        showOption(options, currentOptionIndex);
+    
+        // event listeners for the Prev/Next buttons
+        document.querySelector('#prev-btn').addEventListener('click', () => {
+            currentOptionIndex--;
+            showOption(options, currentOptionIndex);
+        });
+        document.querySelector('#next-btn').addEventListener('click', () => {
+            currentOptionIndex++;
+            showOption(options, currentOptionIndex);
+        });
+    
+        function showOption(options, optionIndex) {
+            // clear the previous option if there is one
+            document.querySelector('#options').innerHTML = '';
+    
+            // disable/enable the Prev/Next buttons based on the current option index
+            document.querySelector('#prev-btn').disabled = optionIndex === 0;
+            document.querySelector('#next-btn').disabled = optionIndex === options.length - 1;
+    
+            // create a new option element and add it to the page
+            const option = options[optionIndex];
+            const asignaciones = option[0];
+            const ins_sobra = option[1];
+            const music_sobra = option[2];
+            const resoluble = ins_sobra.length === 0 && music_sobra.length === 0;
+            const titleElement = document.createElement('h2');
+
+            if (resoluble){
+                titleElement.innerText = 'Se puede distribuir bien!';
+            }else{
+                titleElement.innerText = 'No se puede resolver';
+            }
+            document.querySelector('#options').appendChild(titleElement);
+            console.log('option',option);
+            const optionElement = document.createElement('select');
+            optionElement.setAttribute("id", "option-select");
+            asignaciones.forEach((musician_instrument, index) => {
+
+                const musicianElement = document.createElement('div');
+                musicianElement.innerText = `${musician_instrument[0]} -> ${musician_instrument[1]}`;
+                document.querySelector('#options').appendChild(musicianElement);
+            });
+            if (!resoluble){
+                if (ins_sobra.length !== 0){
+                    const musicianElement = document.createElement('div');
+                    musicianElement.innerText = `Instrumentos que sobran ${ins_sobra}`;
+                    document.querySelector('#options').appendChild(musicianElement);
+                }
+                if (music_sobra.length !== 0){
+                    console.log('personas_sobran',music_sobra);
+                    const musicianElement = document.createElement('div');
+                    musicianElement.innerText = `Personas que sobran ${music_sobra}`;
+                    document.querySelector('#options').appendChild(musicianElement);
+                }
+
+            }
+        }
+    </script>
+</body>
+</html>    
+
