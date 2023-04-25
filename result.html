@@ -13,11 +13,11 @@
             font-size: 24px; /* add this to increase the font size */
         }
         /* define the styles for the buttons in dark mode */
-        body.dark-mode #buttons button {
+        /* body.dark-mode #buttons button {
             background-color: #1f1f1f;
             color: #fff;
             font-size: 24px; /* add this to increase the font size */
-        }
+        /* } */ */
         /* add this to increase the font size of all text elements */
         body.dark-mode * {
             font-size: 24px;
@@ -25,6 +25,53 @@
         #sep div {
             margin-bottom: 10px;
         }
+        body {
+            font-size: 16px;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                font-size: 24px;
+            }
+        }
+
+        #options {
+            text-align: center;
+        }
+
+        #options div {
+            font-size: 1.5em;
+        }
+
+        #sep div {
+            margin-bottom: 20px;
+        }
+    
+
+        #buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #buttons button {
+            font-size: 1.5em;
+			display: inline-block;
+			padding: 30px 60px;
+			background-color: #2196f3;
+			color: white;
+			text-align: center;
+			text-decoration: none;
+			font-size: 26px;
+			border-radius: 15px;
+			margin: 10px;
+		}
+		
+		#buttons button:hover {
+            background-color: #f48fb1;
+        }
+
     </style>
 </head>
 <body class="dark-mode"> <!-- add the "dark-mode" class to the body element -->
@@ -126,4 +173,3 @@
     </script>
 </body>
 </html>    
-
